@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FireGuard - AI Forest Fire Predictor</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
     <div class="main-title">
-        <i class="fa-solid fa-fire-shield"></i> FireGuard
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="FireGuard Logo" class="title-logo">
+        FireGuard
     </div>
 
     <div class="dashboard-container">
