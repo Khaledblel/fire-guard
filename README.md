@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="application/static/logo.png" alt="FireGuard Logo" width="100">
+</p>
+
 # 🔥 FireGuard: AI-Powered Forest Fire Prediction System
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python)
