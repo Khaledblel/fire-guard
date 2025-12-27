@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Forest Fire Predictor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Lien vers le fichier CSS externe -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
   <div class="dashboard-container">
         
-        <!-- Left Panel: INPUTS -->
         <div class="glass-card input-panel">
             <div class="header">
                 <i class="fa-solid fa-sliders"></i>
@@ -20,10 +18,6 @@
             </div>
 
             <form action="{{ url_for('predict') }}" method="POST">
-                <!-- (Laisse tes inputs tels quels, je raccourcis ici pour la lisibilité) -->
-                <!-- Copie exactement tes blocs Temp, RH, Ws, Rain précédents ici -->
-                
-                <!-- ... TEMP ... -->
                 <div class="input-wrapper" id="grp-temp">
                     <div class="label-row">
                         <span><i class="fa-solid fa-temperature-full"></i> Température (°C)</span>
@@ -35,7 +29,6 @@
                     </div>
                 </div>
 
-                <!-- ... HUMIDITÉ ... -->
                 <div class="input-wrapper" id="grp-rh">
                     <div class="label-row">
                         <span><i class="fa-solid fa-droplet"></i> Humidité Relative (%)</span>
@@ -47,7 +40,6 @@
                     </div>
                 </div>
 
-                <!-- ... VENT ... -->
                 <div class="input-wrapper" id="grp-ws">
                     <div class="label-row">
                         <span><i class="fa-solid fa-wind"></i> Vent (km/h)</span>
@@ -59,7 +51,6 @@
                     </div>
                 </div>
 
-                <!-- ... PLUIE ... -->
                 <div class="input-wrapper" id="grp-rain">
                     <div class="label-row">
                         <span><i class="fa-solid fa-cloud-rain"></i> Pluie (mm)</span>
@@ -70,18 +61,13 @@
                         <input type="number" step="0.1" id="Rain" name="Rain" class="num-input sync-input" min="0" max="16.8" value="{{ request.form.Rain if request.form.Rain else 0 }}" required>
                     </div>
                 </div>
-                <!-- ... FIN INPUTS ... -->
 
                 <button type="submit" class="btn-predict">
                     <i class="fa-solid fa-calculator"></i> Calculer le Risque
                 </button>
             </form>
         </div>
-
-        <!-- Right Panel Container: Résultats + Explication -->
         <div class="right-column">
-            
-            <!-- 1. Carte de Résultat -->
             <div class="glass-card result-panel" style="margin-bottom: 2rem;">
                 <div class="header">
                     <i class="fa-solid fa-chart-simple"></i>
@@ -108,8 +94,6 @@
                     </div>
                 {% endif %}
             </div>
-
-            <!-- 2. Nouvelle Carte: Explication FWI -->
             <div class="glass-card info-panel">
                 <div class="header" style="margin-bottom: 1rem;">
                     <i class="fa-solid fa-circle-info"></i>
@@ -145,11 +129,46 @@
                 </div>
             </div>
 
-        </div> <!-- Fin Right Column -->
+        </div>
+<div class="glass-card">
+            <div class="header">
+                <i class="fa-solid fa-satellite"></i>
+                <h2>Vision Satellite</h2>
+            </div>
+            
+            <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--text-muted);">
+                Analysez une image satellite pour détecter des traces d'incendie.
+            </p>
 
+            <form action="{{ url_for('predict_image') }}" method="POST" enctype="multipart/form-data">
+                <div class="file-upload-wrapper">
+                    <input type="file" name="file" accept="image/*" required onchange="document.getElementById('file-name').textContent = this.files[0].name">
+                    <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                    <span id="file-name">Cliquez pour uploader</span>
+                    <small>(.jpg, .png)</small>
+                </div>
+
+                <button type="submit" class="btn-predict" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">
+                    <i class="fa-solid fa-eye"></i> Analyser l'Image
+                </button>
+            </form>
+            {% if image_result %}
+            <div class="img-result-box">
+                <div class="risk-badge {{ 'badge-high' if image_css == 'high-risk' else 'badge-low' }}">
+                    RÉSULTAT
+                </div>
+                <h3 style="font-size: 1.4rem; color: {{ '#ef4444' if image_css == 'high-risk' else '#10b981' }}">
+                    {{ image_result }}
+                </h3>
+                <div class="conf-score">Confiance IA : {{ image_conf }}</div>
+            </div>
+            {% elif img_error %}
+            <div class="img-result-box" style="border-color: #ef4444;">
+                <p style="color: #ef4444;">{{ img_error }}</p>
+            </div>
+            {% endif %}
+        </div>
     </div>
-
-    <!-- Lien vers le fichier JS externe -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
