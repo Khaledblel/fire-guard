@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, render_template
 import pickle
 import numpy as np
 import os
 from tensorflow.keras.models import load_model
 from PIL import Image
+import io
+import base64
 
 app = Flask(__name__)
 
@@ -65,8 +67,13 @@ def predict_image():
 
         if file:
             img = Image.open(file.stream).convert('RGB')
-            img = img.resize((64, 64))
-            img_array = np.array(img)
+            
+            data = io.BytesIO()
+            img.save(data, "JPEG")
+            encoded_img_data = base64.b64encode(data.getvalue()).decode('utf-8')
+
+            img_resized = img.resize((64, 64))
+            img_array = np.array(img_resized)
             img_array = img_array / 255.0
             img_array = np.expand_dims(img_array, axis=0)
 
@@ -84,7 +91,8 @@ def predict_image():
             return render_template('home.html', 
                                    image_result=result_text, 
                                    image_conf=f"{confidence:.1f}%", 
-                                   image_css=result_css)
+                                   image_css=result_css,
+                                   uploaded_image=encoded_img_data)
 
     except Exception as e:
         return render_template('home.html', img_error=f'Erreur : {str(e)}')
